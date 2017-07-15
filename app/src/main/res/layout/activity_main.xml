@@ -9,59 +9,41 @@ tools:context="com.example.francesco.detectmotion.MainActivity"
     android:weightSum="1">
 
     <TextView
-        android:id="@+id/txtviewX"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-
-        android:minLines="2"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/txtviewY"
+        android:id="@+id/txtview1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minLines="2"
         android:textSize="24sp" />
 
-    <Button
-        android:id="@+id/resetBtn"
+    <TextView
+        android:id="@+id/txtview2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="normal"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/resetBtn_game"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="game"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/resetBtn_fast"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="fast"
-        android:textStyle="bold" />
+        android:minLines="2"
+        android:textSize="24sp" />
 
     <TextView
-        android:id="@+id/txtviewSogliaX"
+        android:id="@+id/time_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_purple"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/tvdelay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minLines="1"
-        android:text="soglia: "
+        android:text="delay: "
         android:textAlignment="center"
         android:textSize="18sp" />
 
     <SeekBar
-        android:id="@+id/barraSogliaX"
-        style="@style/Widget.AppCompat.SeekBar"
+        android:id="@+id/barraDelay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.13"
         android:max="100"
-        android:progress="100" />
+        android:progress="230" />
 
     <TextView
         android:id="@+id/txtviewSogliaY"
@@ -82,14 +64,6 @@ tools:context="com.example.francesco.detectmotion.MainActivity"
         android:progress="40" />
 
     <TextView
-        android:id="@+id/Xvalue_label"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="X:"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="18sp" />
-
-    <TextView
         android:id="@+id/Yvalue_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -98,25 +72,21 @@ tools:context="com.example.francesco.detectmotion.MainActivity"
         android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/Zvalue_label"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Z:"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/time_label"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/holo_purple"
-        android:textSize="24sp" />
-
-    <TextView
         android:id="@+id/timeSystem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="System time:"
         android:textSize="30sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="37dp"
+        android:layout_weight="0.62">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
 
 </LinearLayout>
