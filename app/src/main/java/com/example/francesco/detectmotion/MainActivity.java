@@ -20,18 +20,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     AppCompatActivity context;
     TextView tv1, tv2;
     int currentDelay;
-    boolean start=false;
+
     SensorManager sensorManager;
     Sensor sensor;
     float sogliaY;
     long delay = 23;
-    float yPrevius=0;
-    float distance=0;
-    TextView tvSogliaY, timeY, tvTimeSystem, tvdelay;
+
+    TextView tvSogliaY, timeY, tvTimeSystem, tvdelay, actionLog;
     long sysTime;
-    long startTime= 0;
+
     SeekBar barraSogliaY, barraDelay;
-    TextView y_acceleration;
+    TextView x_acceleration, y_acceleration, z_acceleration;
+
+    int state= 0;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,17 +48,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         barraSogliaY.setOnSeekBarChangeListener(this);
         barraDelay.setOnSeekBarChangeListener(this);
 
+        x_acceleration = (TextView)findViewById(R.id.Xvalue_label);
         y_acceleration = (TextView)findViewById(R.id.Yvalue_label);
+        z_acceleration = (TextView)findViewById(R.id.Zvalue_label);
         timeY = (TextView)findViewById(R.id.time_label);
         tvTimeSystem = (TextView)findViewById(R.id.timeSystem);
         sysTime = System.nanoTime();
+        //TimeUnit.NANOSECONDS.toSeconds(1000000000000L);
+        actionLog = (TextView)findViewById(R.id.actionLog);
 
         context=this;
 
         // Get SensorManager instance
         sensorManager = (SensorManager)this.getSystemService(SENSOR_SERVICE);
         // Get ACCELEROMETER sensor
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
     }
 
     protected void onResume(){
@@ -77,24 +83,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
     public void onSensorChanged(SensorEvent event) {
 
-        //Log.e("Main", "GX="+String.valueOf(event.values[0])+"\nGY="+String.valueOf(event.values[1])+"\nGZ="+String.valueOf(event.values[2]));
-        float yCurrent=event.values[1]; // Get current y
-        if(yCurrent > sogliaY && !start) {
-            tv1.setText("Acceleration start: "+sysTime+" \ndy = " + yCurrent);
-            startTime= sysTime;
-            yPrevius= yCurrent;
-            start= true;
-            distance=0;
-        }
-        else if(yCurrent < yPrevius && start) {
-            tv2.setText("Acceleration end: "+sysTime+" \ndy = " + yCurrent);
-            start= false;
-            float time= (sysTime-startTime)/10;
-            timeY.setText("Distanza: "+ yPrevius*time*time);
-        }
-
-        y_acceleration.setText("Y: "+ yCurrent);
+        float xCurrent= event.values[0];
+        float yCurrent= event.values[1];
+        float zCurrent= event.values[2];
         sysTime = SystemClock.currentThreadTimeMillis();
+
+
+        if(xCurrent > 2 || xCurrent < -2)
+            actionLog.setText("Unstable");
+        else if(yCurrent>0 && zCurrent>0 ){
+            actionLog.setText("High Guard");
+        }
+        else if(yCurrent< 0 && zCurrent>0 ) {
+            actionLog.setText("Low Guard");
+        }
+        else
+            actionLog.setText("");
+
+        x_acceleration.setText("X: "+ event.values[0]);
+        y_acceleration.setText("Y: "+ event.values[1]);
+        z_acceleration.setText("Z: "+ event.values[2]);
         tvTimeSystem.setText("System time: "+ sysTime);
     }
 

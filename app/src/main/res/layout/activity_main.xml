@@ -64,10 +64,26 @@ tools:context="com.example.francesco.detectmotion.MainActivity"
         android:progress="40" />
 
     <TextView
+        android:id="@+id/Xvalue_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="X:"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="18sp" />
+
+    <TextView
         android:id="@+id/Yvalue_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Y:"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/Zvalue_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Z:"
         android:textColor="@android:color/darker_gray"
         android:textSize="18sp" />
 
@@ -86,7 +102,14 @@ tools:context="com.example.francesco.detectmotion.MainActivity"
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/actionLog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
     </ScrollView>
 
 </LinearLayout>
