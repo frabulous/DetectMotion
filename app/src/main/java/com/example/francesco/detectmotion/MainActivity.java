@@ -1,16 +1,19 @@
 package com.example.francesco.detectmotion;
 
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DecimalFormat;
 
@@ -20,6 +23,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private DecimalFormat d = new DecimalFormat("#.##");
     TextView tv1, tv2;
     int SENSOR_DELAY;
+
+    Vibrator vibrator;
 
     SensorManager sensorManager;
     Sensor sensorLinearAcc;
@@ -38,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float yPrevious, dy, pos_spike, neg_spike;
     boolean start;
     long startingAttackTime;
-    private long attackMinLenght;
+    private long attackMinLength;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sogliaY = 5.0f;
         start = true;
         startingAttackTime = 0;
-        attackMinLenght = 350000000; //nanoseconds
+        attackMinLength = 350000000; //nanoseconds
 
         tvSogliaRoll = (TextView)findViewById(R.id.tvSogliaRoll);
         barraSogliaRoll = (SeekBar)findViewById(R.id.barraSogliaRoll);
@@ -89,6 +94,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
+        // Get Vibrator instance
+        vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
+
         // Get SensorManager instance
         sensorManager = (SensorManager)this.getSystemService(SENSOR_SERVICE);
         // Get LINEAR ACCELERATION sensor
@@ -98,6 +106,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorFusion.setMode(SensorFusion.Mode.GYRO);
 
         registerSensorManagerListeners();
+
+        /////////prova intent
+        Intent i = getIntent();
+        String mode = i.getStringExtra("game_mode");
+        Toast.makeText(getApplicationContext(), "Modalità: "+ mode, Toast.LENGTH_LONG).show();
 
     }
 
@@ -229,12 +242,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         //waiting for negative spike
                         if (dy > 0) {
                             float spike2 = yCurrent;
-                            if ((pos_spike + spike2 < 0) && (event.timestamp- startingAttackTime > attackMinLenght)) {
+                            if ((pos_spike + spike2 < 0) && (event.timestamp- startingAttackTime > attackMinLength)) {
                                 double dt = (double)(event.timestamp- startingAttackTime)/1000000000; //seconds
                                 //tv1.setText("durata ultimo attacco : "+ dt + " secondi");
                                 //AFFONDO!
                                 actionLog.append("AFFONDO! ----- durata: "+ dt + " sec\n" +
                                                  "___________----- piccoSu: "+ pos_spike +" ; piccoGiu: "+ neg_spike +"\n");
+                                vibrator.vibrate(100);
 
                             } else {
                                 //falso allarme
@@ -294,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         else if(id == barraTempo.getId()) {
             tvTempo.setText("durata minima attacco(msec): " + i);
-            attackMinLenght = i* 1000000;
+            attackMinLength = i* 1000000;
         }
         start = true;
     }
