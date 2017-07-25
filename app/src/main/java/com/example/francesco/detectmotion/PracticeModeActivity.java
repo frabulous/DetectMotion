@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,20 +21,24 @@ public class PracticeModeActivity extends AppCompatActivity implements SensorEve
     ImageView ivCheck, ivPlayerState, ivOpponentState;
     int playerOrientation, playerState, command;
     final int INVALID = -1, HIGH_STAND = 0, LOW_STAND = 1, HIGH_ATTACK = 2, LOW_ATTACK = 3;
-    final int vibrationLenght = 100;
+    final int vibrationLength = 100;
     Vibrator vibrator;
     SensorManager sensorManager;
     Sensor sensorLinearAcc;
     SensorFusion sensorFusion;
     int SENSOR_DELAY;
 
+    private static final long ATTACK_ANIMATION_DELAY = 500; //milliseconds
     private long attackMinLength = 350000000; //nanoseconds
     private float sogliaY = 5.0f;
-    private int sogliaRoll = 55, pitch_upbound = -60, pitch_midbound = 0, pitch_lowbound = 60;
+    private int sogliaRoll = 55, pitch_upbound = -60, pitch_midbound = -5, pitch_lowbound = 60;
     int state;
     float yPrevious, dy, pos_spike, neg_spike;
     boolean start;
     long startingAttackTime;
+
+    final Handler handler = new Handler();
+    private boolean attackAnimationIsOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +59,6 @@ public class PracticeModeActivity extends AppCompatActivity implements SensorEve
         ivCheck = (ImageView)findViewById(R.id.ivCheck);
         ivPlayerState = (ImageView)findViewById(R.id.ivPlayerState);
         ivOpponentState = (ImageView)findViewById(R.id.ivOpponentState);
-        //mirror the opponent img
-        //ivOpponentState.setScaleX(-1);
         //make the opponent img red
         ivOpponentState.setColorFilter(Color.RED);
 
@@ -65,6 +68,7 @@ public class PracticeModeActivity extends AppCompatActivity implements SensorEve
         tvCommand.setText("");
         tvCheck.setText("");
 
+        attackAnimationIsOn = false;
 
         // Get Vibrator instance
         vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
@@ -105,11 +109,13 @@ public class PracticeModeActivity extends AppCompatActivity implements SensorEve
     }
 
     private void changePlayerState(int s){
-        if(s != playerState){
-            ivPlayerState.setImageAlpha(255);
-            playerState = s;
+
+        ivPlayerState.setImageAlpha(255);
+        playerState = s;
+
+        if(!attackAnimationIsOn) {
             //change player img
-            switch (s){
+            switch (s) {
                 case HIGH_STAND:
                     ivPlayerState.setImageResource(R.mipmap.fency_high_stand);
                     break;
@@ -123,10 +129,11 @@ public class PracticeModeActivity extends AppCompatActivity implements SensorEve
                     ivPlayerState.setImageResource(R.mipmap.fency_low_attack);
                     break;
                 case INVALID:
-                    ivPlayerState.setImageAlpha(100);
+                    ivPlayerState.setImageAlpha(80);
                     break;
             }
         }
+
     }
 
     private int generateCommandInt(){
@@ -237,8 +244,7 @@ public class PracticeModeActivity extends AppCompatActivity implements SensorEve
                             float spike2 = yCurrent;
                             if (playerOrientation != INVALID && (pos_spike + spike2 < 0) && (event.timestamp- startingAttackTime > attackMinLength)) {
                                 //AFFONDO!
-                                changePlayerState(playerOrientation +2);
-                                vibrator.vibrate(vibrationLenght);
+                                doAttack();
                             } else {
                                 //falso allarme
                             }
@@ -276,6 +282,22 @@ public class PracticeModeActivity extends AppCompatActivity implements SensorEve
                 }
             }
         }
+    }
+
+    private void doAttack() {
+        changePlayerState(playerOrientation +2);
+        vibrator.vibrate(vibrationLength);
+
+        attackAnimationIsOn = true;
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Allow player image change only after delay
+                attackAnimationIsOn = false;
+            }
+        }, ATTACK_ANIMATION_DELAY);
+
     }
 
 }

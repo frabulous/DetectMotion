@@ -7,6 +7,7 @@
     <string name="mainLogo">fency</string>
     <string name="fencyTitle">fency!</string>
     <string name="fency_logo_des">fency!</string>
-    <string name="practice_btn_des" >practice mode</string>
+    <string name="practice_btn_des">practice mode</string>
     <string name="practicebtnText">- Practice</string>
+    <string name="duelbtnText">- Duel</string>
 </resources>

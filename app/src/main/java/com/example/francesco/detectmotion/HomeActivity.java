@@ -1,6 +1,7 @@
 package com.example.francesco.detectmotion;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +36,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private final Handler mHideHandler = new Handler();
     private View mContentView;
     private View btnPractice;
+    private View btnDuel;
+
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -96,6 +99,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.ivLogo);
         btnPractice = findViewById(R.id.btnPractice);
+        btnDuel = findViewById(R.id.btnDuel);
 
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +117,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btnDebug).setOnClickListener(this);
 
         btnPractice.setOnClickListener(this);
+        btnDuel.setOnClickListener(this);
     }
 
     @Override
@@ -185,6 +190,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             intent.putExtras(b);
             startActivity(intent);
         }
+        if(id == btnDuel.getId()){
+            Intent intent = new Intent(this, DuelModeActivity.class);
+            Bundle b = new Bundle();
+            b.putString("game_mode", "duel mode");
+            intent.putExtras(b);
+            startActivity(intent);
+        }
     }
 }
-
